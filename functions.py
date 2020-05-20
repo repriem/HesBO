@@ -3,6 +3,8 @@ import numpy as np
 # import matlab.engine
 # import torch
 # from BOCK_benchmarks.mnist_weight import mnist_weight
+from sego.cases.high_mod_branin_prob import get_case as get_case_branin
+from sego.cases.rover_60_prob import get_case as get_case_rov
 
 # All functions are defined in such a way that have global maximums,
 # if a function originally has a minimum, the final objective value is multiplied by -1
@@ -41,7 +43,7 @@ class Rosenbrock(TestFunction):
         n = len(scaled_x)
         return self.evaluate_true(x) + np.random.normal(0,self.var,(n,1))
 
-class Branin(TestFunction):
+class Branin0(TestFunction):
     def __init__(self, act_var, noise_var=0):
         self.range=np.array([[-5,10],
                              [0,15]])
@@ -185,3 +187,123 @@ class Quadratic(TestFunction):
         scaled_x = self.scale_domain(x)
         n = len(scaled_x)
         return self.evaluate_true(x) + np.random.normal(0,self.var,(n,1))
+    
+    
+class Sphere(TestFunction):
+    def __init__(self, act_var=None, noise_var=0):
+        self.range = np.array([[-2, 2],
+                               [-2, 2]])
+        if act_var is None:
+            self.act_var = np.arange(self.range.shape[0])
+        else:
+            self.act_var = act_var
+        self.var = noise_var
+
+    def scale_domain(self,x):
+        # Scaling the domain
+        x_copy = np.copy(x)
+        if len(x_copy.shape) == 1:
+            x_copy = x_copy.reshape((1, x_copy.shape[0]))
+        for i in range(len(self.range)):
+            x_copy[:, i] = x_copy[:, i] * (self.range[i, 1] - self.range[i, 0]) / 2 + (
+                    self.range[i, 1] + self.range[i, 0]) / 2
+        return x_copy
+
+    def evaluate_true(self,x):
+        scaled_x = self.scale_domain(x)
+        f = [[0]]
+        f[0] = [((i[self.act_var[0]])**2) for i in scaled_x]
+        f = np.transpose(f)
+        return f
+
+    def evaluate(self, x):
+        scaled_x = self.scale_domain(x)
+        n = len(scaled_x)
+        return self.evaluate_true(x) + np.random.normal(0,self.var,(n,1))
+    
+class Rastrigin(TestFunction):
+    def __init__(self, act_var=None, noise_var=0):
+        self.range = np.array([[-2, 2],
+                               [-2, 2]])
+        if act_var is None:
+            self.act_var = np.arange(self.range.shape[0])
+        else:
+            self.act_var = act_var
+        self.var = noise_var
+
+    def scale_domain(self,x):
+        # Scaling the domain
+        x_copy = np.copy(x)
+        if len(x_copy.shape) == 1:
+            x_copy = x_copy.reshape((1, x_copy.shape[0]))
+        for i in range(len(self.range)):
+            x_copy[:, i] = x_copy[:, i] * (self.range[i, 1] - self.range[i, 0]) / 2 + (
+                    self.range[i, 1] + self.range[i, 0]) / 2
+        return x_copy
+
+    def evaluate_true(self,x):
+        print(x)
+        scaled_x = self.scale_domain(x)
+        f = [[0]]
+        f[0] = [10+(i[self.act_var[0]])**2 -10*np.cos(2*np.pi*(i[self.act_var[0]])) for i in scaled_x]
+        f = np.transpose(f)
+        print(f)
+        return f
+
+    def evaluate(self, x):
+        scaled_x = self.scale_domain(x)
+        n = len(scaled_x)
+        return self.evaluate_true(x) + np.random.normal(0,self.var,(n,1))
+    
+class Branin(TestFunction):
+    def __init__(self, act_var=None, noise_var=0, high_dim=10):
+        self.range = np.array([[-1, 1],
+                               [-1, 1]])
+        self.dim=high_dim
+
+    def evaluate_true(self,x):
+        _x = np.atleast_2d(x)
+        f = [[0]]
+        f[0] = [get_case_branin(self.dim)['f_obj'](x_i)[0] for x_i in _x]
+        f = np.transpose(f)
+        print(f)
+        return -f
+
+    def evaluate(self, x):
+        return self.evaluate_true(x)
+    
+class Rover(TestFunction):
+    def __init__(self, act_var=None, noise_var=0, high_dim=10):
+        self.range = np.array([[-1, 1],
+                               [-1, 1]])
+        if act_var is None:
+            self.act_var = np.arange(self.range.shape[0])
+        else:
+            self.act_var = act_var
+        self.var = noise_var
+        self.dim=high_dim
+        
+    def scale_domain(self,x):
+        # Scaling the domain
+        x_copy = np.copy(x)
+        if len(x_copy.shape) == 1:
+            x_copy = x_copy.reshape((1, x_copy.shape[0]))
+        for i in range(len(self.range)):
+            x_copy[:, i] = x_copy[:, i] * (self.range[i, 1] - self.range[i, 0]) / 2 + (
+                        self.range[i, 1] + self.range[i, 0]) / 2
+        return x_copy
+
+    def evaluate_true(self,x):
+        scaled_x=self.scale_domain(x)
+        # Calculating the output
+        f = [[0]]
+        f[0] = [get_case_rov(self.dim)['f_obj']([self.act_var[0]])[0]for j in scaled_x]
+        f = np.transpose(f)
+        return -f
+
+    def evaluate(self, x):
+        scaled_x = self.scale_domain(x)
+        n = len(scaled_x)
+        return self.evaluate_true(x) + np.random.normal(0,self.var,(n,1))    
+        
+
