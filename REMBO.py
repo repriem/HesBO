@@ -185,8 +185,6 @@ def RunRembo(
         best_results[0, i + initial_n] = np.max(f_s_true)
         elapsed[0, i + initial_n] = stop - start
 
-        # print(D[index], cnv_prj.evaluate([D[index]]), test_func.evaluate(cnv_prj.evaluate([D[index]])))
-
     # if func_type == 'WalkerSpeed':
     #     eng.quit()
 

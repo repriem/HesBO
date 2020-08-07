@@ -57,7 +57,10 @@ def main(
     case_conf["smooth_recombination"] = False
 
     for i in range(n_iter):
-        _, _, _, _, fs_true, high_s = RunRembo(
+    
+        print('Iteration %d' %i)
+        print('------------')
+        res , _, _, _, fs_true, high_s = RunRembo(
             low_dim=n_comp,
             high_dim=high_dim,
             func_type=func_name_in,
@@ -69,6 +72,8 @@ def main(
             matrix_type="normal",
         )
         time_i = time.process_time() - time_0
+        
+        print('Result %d : ' %i, res)
 
         if i == 0 and doe_path is None:
             x_all = high_s

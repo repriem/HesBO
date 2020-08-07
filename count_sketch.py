@@ -161,6 +161,7 @@ def RunMain(
     # if func_type == 'WalkerSpeed':
     #     eng.quit()
     high_s = back_projection(s, high_to_low, sign, box_size)
+    print(best_results)
     return best_results, elapsed, s, f_s, f_s_true, high_s
 
 

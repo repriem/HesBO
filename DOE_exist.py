@@ -36,7 +36,7 @@ from argparse import ArgumentParser
 
 
 def main(
-    DOE_path="./", Output_path="./", budget=10, max_simu=1, n_eval_sub=35, n_init=5
+    DOE_path="./", Output_path="./", budget=10, max_simu=1, n_eval_sub=35, n_init=5, n_comp=2
 ):
     cases = os.listdir(DOE_path)
     print(cases)
@@ -58,14 +58,15 @@ def main(
 
             path_doe_i = path_doe_dir + "/" + path_all_doe[i]
             output_dir = path_res + "/res_" + str(i)
+            os.mkdir(output_dir)
 
             output_filename = os.path.join(log_dir, "main_%d.log" % (i))
             output_file = open(output_filename, "w")
 
             # Launch String max_eval res_path case n_init n_reg
             exp = (
-                "ionice -c3 nice -n 15 python -u run_REMBO.py --n_iter=%s --res_path=%s --case=%s --doe_size=%s --budget=%s --doe_path=%s"
-                % (budget, output_dir, case, n_init, n_eval_sub, path_doe_i)
+                "ionice -c3 nice -n 15 python -u run_REMBO.py --n_iter=%s --res_path=%s --case=%s --doe_size=%s --budget=%s --doe_path=%s --n_comp=%d"
+                % (budget, output_dir, case, n_init, n_eval_sub, path_doe_i,n_comp)
             )
 
             p_i = subprocess.Popen(
@@ -143,6 +144,13 @@ if __name__ == "__main__":
         type=int,
         default=5,
     )
+    parser.add_argument(
+        "--n_comp",
+        dest="n_comp",
+        help="number of component",
+        type=int,
+        default=2,
+    )
 
     # test to save
     kwargs = parser.parse_args()
@@ -154,4 +162,5 @@ if __name__ == "__main__":
         max_simu=kwargs.max_simu,
         n_eval_sub=kwargs.n_eval,
         n_init=kwargs.n_init,
+        n_comp=kwargs.n_comp,
     )
