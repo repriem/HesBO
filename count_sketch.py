@@ -108,6 +108,11 @@ def RunMain(
         test_func = functions.Hartmann6(active_var, noise_var=noise_var)
     elif func_type == "StybTang":
         test_func = functions.StybTang(active_var, noise_var=noise_var)
+    elif "SEGO-" in func_type:
+        func_name = func_type.split("-")[1]
+        test_func = functions.SEGO_Function(
+            active_var, noise_var=noise_var, name=func_name
+        )
     else:
         TypeError("The input for func_type variable is invalid, which is", func_type)
         return
@@ -161,7 +166,6 @@ def RunMain(
     # if func_type == 'WalkerSpeed':
     #     eng.quit()
     high_s = back_projection(s, high_to_low, sign, box_size)
-    print(best_results)
     return best_results, elapsed, s, f_s, f_s_true, high_s
 
 

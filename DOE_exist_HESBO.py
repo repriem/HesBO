@@ -36,7 +36,13 @@ from argparse import ArgumentParser
 
 
 def main(
-    DOE_path="./", Output_path="./", budget=10, max_simu=1, n_eval_sub=35, n_init=5, n_comp=2
+    DOE_path="./",
+    Output_path="./",
+    budget=10,
+    max_simu=1,
+    n_eval_sub=35,
+    n_init=5,
+    n_comp=2,
 ):
     cases = os.listdir(DOE_path)
     print(cases)
@@ -65,8 +71,8 @@ def main(
 
             # Launch String max_eval res_path case n_init n_reg
             exp = (
-                "python -u run_REMBO.py --n_iter=%s --res_path=%s --case=%s --doe_size=%s --budget=%s --doe_path=%s --n_comp=%d"
-                % (budget, output_dir, case, n_init, n_eval_sub, path_doe_i,n_comp)
+                "python -u run_HESBO.py --n_iter=%s --res_path=%s --case=%s --doe_size=%s --budget=%s --doe_path=%s --n_comp=%d"
+                % (budget, output_dir, case, n_init, n_eval_sub, path_doe_i, n_comp)
             )
 
             p_i = subprocess.Popen(
@@ -145,11 +151,7 @@ if __name__ == "__main__":
         default=5,
     )
     parser.add_argument(
-        "--n_comp",
-        dest="n_comp",
-        help="number of component",
-        type=int,
-        default=2,
+        "--n_comp", dest="n_comp", help="number of component", type=int, default=2,
     )
 
     # test to save
