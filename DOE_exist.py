@@ -65,7 +65,7 @@ def main(
 
             # Launch String max_eval res_path case n_init n_reg
             exp = (
-                "ionice -c3 nice -n 15 python -u run_REMBO.py --n_iter=%s --res_path=%s --case=%s --doe_size=%s --budget=%s --doe_path=%s --n_comp=%d"
+                "python -u run_REMBO.py --n_iter=%s --res_path=%s --case=%s --doe_size=%s --budget=%s --doe_path=%s --n_comp=%d"
                 % (budget, output_dir, case, n_init, n_eval_sub, path_doe_i,n_comp)
             )
 
